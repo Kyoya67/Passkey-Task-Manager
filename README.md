@@ -1,18 +1,18 @@
-# Kyoya67 TODO
+# Passkey Task Manager
 
-パスキーで登録・ログインし、TODOをユーザーごとに管理できるWebアプリケーション。
+パスキーで登録・ログインし、タスクをユーザーごとに管理できるWebアプリケーション。
 
 ## 公開中のアプリ
 [https://ca-techlounge-todo.kyo8.dev/](https://ca-techlounge-todo.kyo8.dev/)
 
-ブラウザでパスキーを使って登録・ログインし、TODOを管理できます。TODOの作成、検索、編集、削除に加え、ドラッグ操作で状態や優先順位を変更できます。
-APIは運用コストを抑えるため停止している場合があります。その間はログインやTODO操作を利用できません。
+ブラウザでパスキーを使って登録・ログインし、タスクを管理できます。タスクの作成、検索、編集、削除に加え、ドラッグ操作で状態や優先順位を変更できます。
+APIは運用コストを抑えるため停止している場合があります。その間はログインやタスク操作を利用できません。
 
 ## 画面の見た目
 
-ライトモードは淡いグリーンとブルーの背景に白いカードを重ねた、明るいデザインです。ダークモードは深緑の背景と落ち着いた色のカードで、同じ操作を利用できます。ログイン画面とTODOボードのどちらでも、画面右上のアイコンから切り替えられます。
+ライトモードは淡いグリーンとブルーの背景に白いカードを重ねた、明るいデザインです。ダークモードは深緑の背景と落ち着いた色のカードで、同じ操作を利用できます。ログイン画面とタスクボードのどちらでも、画面右上のアイコンから切り替えられます。
 
-ログイン画面ではパスキーの登録・ログインを選択できます。ログイン後のTODOボードは「未着手」「進行中」「完了」の3列に分かれ、優先度ごとにタスクを表示します。
+ログイン画面ではパスキーの登録・ログインを選択できます。ログイン後のタスクボードは「未着手」「進行中」「完了」の3列に分かれ、優先度ごとにタスクを表示します。
 
 ### パスキー登録・ログイン画面
 
@@ -20,11 +20,11 @@ APIは運用コストを抑えるため停止している場合があります�
 |---|---|
 | ![ライトモードのパスキー登録・ログイン画面](asset/screenshots/passkey-login-light.png) | ![ダークモードのパスキー登録・ログイン画面](asset/screenshots/passkey-login-dark.png) |
 
-### TODOボード
+### タスクボード
 
 | ライトモード | ダークモード |
 |---|---|
-| ![ライトモードのTODOボード。未着手・進行中・完了の3列にTODOを表示](asset/screenshots/todo-board-light.png) | ![ダークモードのTODOボード。未着手・進行中・完了の3列にTODOを表示](asset/screenshots/todo-board-dark.png) |
+| ![ライトモードのタスクボード。未着手・進行中・完了の3列にタスクを表示](asset/screenshots/todo-board-light.png) | ![ダークモードのタスクボード。未着手・進行中・完了の3列にタスクを表示](asset/screenshots/todo-board-dark.png) |
 
 ## ドキュメント全体像
 
@@ -112,12 +112,12 @@ make db-migrate-force VERSION=1
 
 ブラウザで[http://localhost:8081](http://localhost:8081)を開く。各エンドポイントを選択して「Try it out」を押し、必要なパラメータやリクエストボディを入力して「Execute」を押す。レスポンスのステータスコードとJSONを確認する。
 
-Swagger UIでは、次の4つのTODO APIを順番に確認できる。
+Swagger UIでは、次の4つのタスクAPIを順番に確認できる。
 
-1. `POST /todos`でTODOを作成する
+1. `POST /todos`でタスクを作成する
 2. `GET /todos`で一覧を取得する
-3. `PUT /todos/{id}`で作成したTODOを更新する
-4. `DELETE /todos/{id}`で作成したTODOを削除する
+3. `PUT /todos/{id}`で作成したタスクを更新する
+4. `DELETE /todos/{id}`で作成したタスクを削除する
 
 最初に`GET /health`を実行し、HTTP 200と`{"status":"ok"}`が返ることを確認する。
 
@@ -135,11 +135,11 @@ docker compose -f compose.local.yaml down
 
 クラウド上のAPIをSwagger UIから確認する場合は、ローカル環境を起動して[http://localhost:8081](http://localhost:8081)を開く。画面上部のサーバー選択欄で`AWS上のAPI`を選択すると、ローカルSwagger UIからクラウドAPIを実行できる。
 
-TODO APIは次の順番で確認する。
+タスクAPIは次の順番で確認する。
 
 1. `GET /health`でHTTP 200とヘルスチェック結果を確認する
-2. `POST /todos`でTODOを作成する
+2. `POST /todos`でタスクを作成する
 3. `GET /todos`で一覧を取得する
 4. `GET /todos?title=...`でタイトルの部分一致検索を確認する
-5. `PUT /todos/{id}`で作成したTODOを更新する
-6. `DELETE /todos/{id}`で作成したTODOを削除する
+5. `PUT /todos/{id}`で作成したタスクを更新する
+6. `DELETE /todos/{id}`で作成したタスクを削除する

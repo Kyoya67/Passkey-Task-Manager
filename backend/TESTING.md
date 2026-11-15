@@ -4,7 +4,7 @@ REST APIのHTTP処理、業務ルール、Repositoryのsqlc呼び出しを責務
 
 ## cmd/api
 
-`main.go`では、CORS、TODOのOrigin検証、セッション検証、認証APIのレート制限を含む依存関係の組み立てを行う。`main`を直接起動する単体テストはなく、今回の計測では0.0%。判定処理は`internal/middleware`でテストする。
+`main.go`では、CORS、タスクのOrigin検証、セッション検証、認証APIのレート制限を含む依存関係の組み立てを行う。`main`を直接起動する単体テストはなく、今回の計測では0.0%。判定処理は`internal/middleware`でテストする。
 
 ## internal/auth
 
@@ -76,9 +76,9 @@ REST APIのHTTP処理、業務ルール、Repositoryのsqlc呼び出しを責務
 
 `cors_test.go`では、許可OriginへのCookie付きリクエストのCORSヘッダーを確認する。`cors.go`の`CORS`は単体テストで100.0%。
 
-`auth_test.go`では、TODO一覧・作成・更新・削除の未ログイン拒否、正しいセッションの通過、期限切れ・不正セッションの拒否、Redis障害時の503、公開ルートとCORSプリフライトの通過を確認する。ユーザーIDをリクエストコンテキストへ渡すことも確認する。TODOの所有者条件はTODOパッケージで検証する。
+`auth_test.go`では、タスク一覧・作成・更新・削除の未ログイン拒否、正しいセッションの通過、期限切れ・不正セッションの拒否、Redis障害時の503、公開ルートとCORSプリフライトの通過を確認する。ユーザーIDをリクエストコンテキストへ渡すことも確認する。タスクの所有者条件はタスクパッケージで検証する。
 
-`csrf_test.go`では、TODOの状態変更で許可Originを通し、別Origin・Originなし・`null`・似たドメインを403にすることを確認する。GET・OPTIONS、認証・ヘルスルートはこのミドルウェアの対象外であることも確認する。
+`csrf_test.go`では、タスクの状態変更で許可Originを通し、別Origin・Originなし・`null`・似たドメインを403にすることを確認する。GET・OPTIONS、認証・ヘルスルートはこのミドルウェアの対象外であることも確認する。
 
 `auth_rate_limit_test.go`では、認証APIのルート別上限、超過時の429と`Retry-After`、Redis障害時の503、ALBの`X-Forwarded-For`から最終IPを採用すること、対象外ルートの通過を確認する。ローカルRedisを使う統合テストではLuaスクリプトによる10回までの通過・11回目の拒否とTTL設定を確認する。
 
@@ -107,7 +107,7 @@ REST APIのHTTP処理、業務ルール、Repositoryのsqlc呼び出しを責務
 
 ## internal/router
 
-`router.go`では、次の観点をテストしている。渡された登録・ログイン・ログアウトHandlerとTODO Handlerが生成ルーティングへ接続され、Health APIへ到達すること、TODOルートが登録されていること、埋め込みOpenAPI定義が有効であることを確認する。RepositoryとServiceの組み立ては`cmd/api/main.go`が担当する。
+`router.go`では、次の観点をテストしている。渡された登録・ログイン・ログアウトHandlerとタスクのHandlerが生成ルーティングへ接続され、Health APIへ到達すること、タスクルートが登録されていること、埋め込みOpenAPI定義が有効であることを確認する。RepositoryとServiceの組み立ては`cmd/api/main.go`が担当する。
 
 | ファイル | 関数 | カバレッジ |
 |---|---|---:|
@@ -116,7 +116,7 @@ REST APIのHTTP処理、業務ルール、Repositoryのsqlc呼び出しを責務
 
 ## internal/todo
 
-`handler_test.go`では、Fake Serviceを差し替え、認証済みユーザーIDの引き渡しと未認証リクエストの401、HTTPリクエストのバインド、レスポンスJSON、ステータスコード、サービスエラーのHTTP変換、TODOのレスポンス変換をテストしている。503では操作名だけをログに残し、タイトルやDBエラー本文を漏らさないことも確認する。
+`handler_test.go`では、Fake Serviceを差し替え、認証済みユーザーIDの引き渡しと未認証リクエストの401、HTTPリクエストのバインド、レスポンスJSON、ステータスコード、サービスエラーのHTTP変換、タスクのレスポンス変換をテストしている。503では操作名だけをログに残し、タイトルやDBエラー本文を漏らさないことも確認する。
 
 | ファイル | 関数 | カバレッジ |
 |---|---|---:|
@@ -157,9 +157,9 @@ REST APIのHTTP処理、業務ルール、Repositoryのsqlc呼び出しを責務
 
 ## internal/todo（統合テスト）
 
-`repository_integration_test.go`では、`INTEGRATION_DATABASE_URL`で指定したPostgreSQLへ接続し、Fakeを使わずにCreate、List、Update、Move、Deleteを実行している。所有者ごとの分離、`user_id`なしのINSERT拒否、作成したTODOの保存、一覧取得、ステータスの保存・更新・省略時の維持、不正なステータスのDB制約、優先順位の初期値・同じ状態と優先度のグループ内移動・異なる優先度、所有者、ステータスへの移動拒否、優先度変更後の順位、完了TODOの更新日時順と並べ替え拒否、更新後のタイトルと`updated_at`、削除後の更新失敗を検証する。
+`repository_integration_test.go`では、`INTEGRATION_DATABASE_URL`で指定したPostgreSQLへ接続し、Fakeを使わずにCreate、List、Update、Move、Deleteを実行している。所有者ごとの分離、`user_id`なしのINSERT拒否、作成したタスクの保存、一覧取得、ステータスの保存・更新・省略時の維持、不正なステータスのDB制約、優先順位の初期値・同じ状態と優先度のグループ内移動・異なる優先度、所有者、ステータスへの移動拒否、優先度変更後の順位、完了タスクの更新日時順と並べ替え拒否、更新後のタイトルと`updated_at`、削除後の更新失敗を検証する。
 
-今回、ローカルPostgreSQLを使う`TestRepositoryIntegration`が成功した。統合テスト単独での`repository.go`のカバレッジは、`Move`が81.2%、`Create`・`List`・`Update`・`Delete`がそれぞれ100.0%。TODOパッケージ全体では24.6%。
+今回、ローカルPostgreSQLを使う`TestRepositoryIntegration`が成功した。統合テスト単独での`repository.go`のカバレッジは、`Move`が81.2%、`Create`・`List`・`Update`・`Delete`がそれぞれ100.0%。タスクパッケージ全体では24.6%。
 
 ## カバレッジ計測結果
 
@@ -178,7 +178,7 @@ REST APIのHTTP処理、業務ルール、Repositoryのsqlc呼び出しを責務
 | internal/todo | 90.7% |
 | **全パッケージ合計** | **65.9%** |
 
-統合テストだけを`go test ./internal/auth ./internal/middleware ./internal/todo -run Integration -coverprofile=integration-only-coverage.out -count=1 -v`で再実行し、authの4件、middlewareの1件、TODOの1件がすべて成功した。統合テスト単独のパッケージカバレッジはauth 45.4%、middleware 35.4%、TODO 24.6%。これは統合テストだけの値であり、上表の全テスト込みの値とは異なる。
+統合テストだけを`go test ./internal/auth ./internal/middleware ./internal/todo -run Integration -coverprofile=integration-only-coverage.out -count=1 -v`で再実行し、authの4件、middlewareの1件、タスクの1件がすべて成功した。統合テスト単独のパッケージカバレッジはauth 45.4%、middleware 35.4%、タスク 24.6%。これは統合テストだけの値であり、上表の全テスト込みの値とは異なる。
 
 全パッケージの値には、手動起動をエントリーポイントとする`cmd/api`、DB接続、sqlc・oapi-codegenの生成コード、Router、CORSミドルウェアが含まれる。生成コードは直接編集していない。Goのパッケージ単位の計測では、テスト対象パッケージ外にある生成sqlcコードは0.0%と表示されるため、Repository統合テストの実行有無とは区別する。
 
