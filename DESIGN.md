@@ -127,7 +127,7 @@ ECS Serviceは必要時のみタスク数を1に増やし、利用しない場�
 | ○ | GitHub Actions + AWS OIDC | GitHub ActionsからAWSへアクセスする際にOIDCを利用し、長期アクセスキーを保存せずに一時的な認証情報でECR・ECSへのデプロイを行う |
 | — | GitHub Actions + AWS長期アクセスキー | セキュリティ上のリスクが高く、長期アクセスキーの管理が必要になるため採用しない |
 
-GitHub Actions用のOIDCプロバイダー、IAMロール、信頼ポリシー、ECR・ECS操作権限はTerraformの`infra/modules/iam/`で管理する。OIDCプロバイダーのAudienceは`sts.amazonaws.com`とし、信頼対象は対象リポジトリの`main`ブランチに限定する。
+GitHub Actions用のOIDCプロバイダー、IAMロール、信頼ポリシー、ECR・ECS操作権限はTerraformの`infra/modules/iam/`で管理する。OIDCプロバイダーのAudienceは`sts.amazonaws.com`とし、信頼対象は対象リポジトリの`main`ブランチに限定する。 GitHubのOIDC subjectにはリポジトリ名と所有者・リポジトリのIDを指定するため、リポジトリ名を変更した場合はTerraformの信頼条件も更新する。
 
 ECS向けのCDは`.github/workflows/cd-ecs.yml`として残し、手動実行だけに限定する。Lightsail向けのCDは`.github/workflows/cd-lightsail.yml`で管理し、`main`へのマージ後のpushで実行する。Lightsail CDはAWS OIDCでECRへイメージをPushした後、TailscaleのGitHub OIDC接続とSSHを経由してLightsailへECR認証情報を渡し、既存のDocker ComposeサービスをPull・再作成する。Lightsail側にAWS CLIは配置しない。
 
