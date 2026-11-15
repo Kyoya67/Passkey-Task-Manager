@@ -8,9 +8,7 @@
 - 設計を変更した場合は、変更理由とトレードオフを`DESIGN.md`に記録する
 - 実装や設計の作業を開始する前に、`README.md`と`DESIGN.md`を確認する
 - Codexとの対話や開発中の検証によって実装方針が変わった場合は、実装を進める前後に`DESIGN.md`を更新する
-- 作業はGitHub Issueで管理し、開発工程全体の進捗はGitHub ProjectsのPhaseで管理する
-- 開発はPhase 1（Local Development）、Phase 2（AWS Infrastructure）、Phase 3（Additional Features）の順に進める
-- 各Phaseの全Issueを`develop`にマージし、統合テストに成功した後、Phase単位で`main`へマージする
+- 作業はGitHub Issueで管理し、`develop`から`main`へのPull Requestで変更を反映する
 - AWS環境は1つのみ構築し、`main`へのマージをデプロイの基準とする
 - Issueに記載された作業範囲と完了条件を優先し、指示されていない追加機能を独断で実装しない
 
@@ -64,16 +62,15 @@
 - 完了条件には、実装・テスト・ビルド・OpenAPI更新・Design Doc更新など、完了判定に必要な項目を並べる
 - Issueの作業範囲を超える内容は、必要に応じて別Issueとして管理する
 
-### 通常のPull Request
+### Pull Request
 
-- Issueごとに`develop`から作業ブランチを作成する
-- 通常の機能追加・修正PRは、明示がない限り`develop`をマージ先にする
+- `develop`から`main`へのPull Requestを作成する
 - PRタイトルはConventional Commits風のprefixを付け、`<prefix>: <変更内容>`の形式にする
 - prefixは、機能追加・仕様追加・実装変更は`feat`、バグ修正は`fix`、テスト追加・修正は`test`、ドキュメントのみの変更は`docs`、リファクタリングは`refactor`、設定・依存関係・開発環境の変更は`chore`を使用する
 - 複数の変更を含む場合は、PRの主目的に最も近いprefixを選ぶ。今回のようにマイグレーション管理機能を追加する場合は`feat`を使用する
-- PR本文は「概要」「関連Issue」「対応内容」「検証内容」の順で書く
+- PR本文は「概要」「関連Issue」「対応内容」「検証内容」「後続対応」の順で書く
 - PRの概要には、何を実現するPRかと今回の作業範囲を短く書く
-- PRの関連Issueには、`Related to #1`のようにIssue番号だけを書く。Issue URLは併記しない
+- PRの関連Issueには、完了するIssueは`Closes #1`、関連するだけのIssueは`Related to #1`と記載する。該当しない場合は「なし」と書く
 - PRの対応内容には、実装・インフラ・ドキュメントの変更点を箇条書きで書く
 - PRの検証内容には、実際に確認したコマンドや動作確認結果だけを書く
 - PRの後続対応には、このPRで完了していない範囲や次に対応する課題を書く
@@ -81,9 +78,9 @@
 - 未実装の内容を、対応内容や検証内容に完了済みとして書かない
 - テスト未実施・失敗・実行できない場合は、その事実と理由を記載する
 - PRをマージする前に、変更差分をレビューし、CIの成功を確認する
-- 後続対応には、Phase内の残りのissueの番号のみを記載する
+- 後続対応には、関連するIssue番号を記載し、該当しない場合は「なし」と書く
 
-### 通常PRのテンプレート
+### PRのテンプレート
 
 ```markdown
 ### 概要
@@ -98,30 +95,6 @@
 
 ### 後続対応
 - #次のIssue番号
-```
-
-### Phase完了時のPull Request
-
-- `develop`から`main`へマージするPRは、Phase単位のリリースPRとして作成する
-- Phaseに含まれる全Issueが`develop`へマージされ、統合テストが成功していることを確認する
-- PR本文は「概要」「対応Pull Request」「変更内容」「検証内容」の順で書く
-- 「対応Pull Request」には、そのPhaseで`develop`へマージ済みの主要PRをIssue・機能単位で並べる
-- 「変更内容」には、個別コミットではなく、Phase全体で実現した機能・アーキテクチャ変更・運用変更をまとめる
-- 「検証内容」には、CI結果、統合テスト、実際に確認したローカル環境またはAWS環境の動作だけを書く
-- Phase 1ではローカル環境の動作確認を中心とする
-- Phase 2以降はAWS環境での動作確認結果も記録する
-- Gitタグによるバージョン管理は行わず、Pull Requestとコミット履歴で変更を追跡する
-
-### Phase完了PRのテンプレート
-
-```markdown
-### 概要
-
-### 対応Pull Request
-
-### 変更内容
-
-### 検証内容
 ```
 
 ## バックエンド
