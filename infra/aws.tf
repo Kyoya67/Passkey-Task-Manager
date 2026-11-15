@@ -99,7 +99,7 @@ module "iam" {
   log_group_arn                = module.logs.arn
   ecr_repository_arn           = module.ecr.arn
   migration_ecr_repository_arn = module.ecr_migration.arn
-  github_repository            = "Kyoya67@86813838/passkey-todo@1425009180"
+  github_repository            = "Kyoya67@86813838/Passkey-Task-Manager@1425009180"
   github_branch                = "main"
   ecs_cluster_arn              = "arn:aws:ecs:${local.region}:${local.account_id}:cluster/${local.project}"
   amplify_app_arn              = module.amplify.app_arn
