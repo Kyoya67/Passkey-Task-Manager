@@ -7,7 +7,7 @@
 バックエンド、将来追加するフロントエンド、IaCを同一リポジトリで管理するモノレポ構成を採用する。
 
 ```text
-kyoya67-todo/
+プロジェクトルート/
 ├── backend/
 ├── frontend/
 ├── api/
@@ -215,7 +215,7 @@ sequenceDiagram
     end
 
     rect rgb(245, 250, 240)
-        Note over User,DB: パスキーログインとTODO操作
+        Note over User,DB: パスキーログインとタスク操作
         User->>Browser: ログインを選択
         Browser->>API: ログイン開始
         API->>Redis: ログインチャレンジを保存（5分）
@@ -228,14 +228,14 @@ sequenceDiagram
         API->>API: チャレンジ・Origin・RP ID・署名を検証
         API->>Redis: セッショントークンのハッシュ→ユーザーIDを保存（24時間）
         API-->>Browser: todo_session Cookieを設定（204）
-        Browser->>API: TODO操作（Cookieを送信）
+        Browser->>API: タスク操作（Cookieを送信）
         API->>Redis: Cookieのトークンをハッシュ化してユーザーIDを取得
-        API->>DB: user_idで絞ってTODOを操作
+        API->>DB: user_idで絞ってタスクを操作
         API-->>Browser: 操作結果
     end
 `````
 
-秘密鍵は端末のパスキー側に残り、バックエンドへ送らない。登録・ログインのチャレンジは一度使うとRedisから削除する。ログイン後はCookieに入れた不透明なトークンからRedis上のセッションを参照し、取得したユーザーIDでTODOへのアクセスを制限する。
+秘密鍵は端末のパスキー側に残り、バックエンドへ送らない。登録・ログインのチャレンジは一度使うとRedisから削除する。ログイン後はCookieに入れた不透明なトークンからRedis上のセッションを参照し、取得したユーザーIDでタスクへのアクセスを制限する。
 
 ### 4.3 AWS構成
 
@@ -253,7 +253,7 @@ AWS環境は1つとし、現在はLightsail版を利用する。Terraformの`dep
 
 Route 53のAPI用AレコードはLightsailのStatic IPを参照する。ブラウザは名前解決後、Lightsail上のCaddyへ直接接続する。Caddyは80・443番で待ち受け、HTTPをHTTPSへリダイレクトし、TLSを終端してComposeネットワーク内の`backend:8080`へ転送する。DNSは名前解決に使われ、HTTPリクエストを中継するものではない。
 
-1台のLightsail上でCaddy、Go/Echoのバックエンド、PostgreSQL、RedisをDocker Composeで動かす。バックエンドのホスト側ポート公開は`127.0.0.1:8080`に限定し、PostgreSQLとRedisはホスト側へポートを公開しない。TODO・パスキーの公開鍵などを保存するPostgreSQLは`postgres_data`で永続化し、Caddyは`caddy_data`と`caddy_config`を利用する。Redisはチャレンジ・セッションなどの短期データを扱い、RDB・AOFによる永続化を無効にしているため、再作成時にはセッションなどが失われる。
+1台のLightsail上でCaddy、Go/Echoのバックエンド、PostgreSQL、RedisをDocker Composeで動かす。バックエンドのホスト側ポート公開は`127.0.0.1:8080`に限定し、PostgreSQLとRedisはホスト側へポートを公開しない。タスク・パスキーの公開鍵などを保存するPostgreSQLは`postgres_data`で永続化し、Caddyは`caddy_data`と`caddy_config`を利用する。Redisはチャレンジ・セッションなどの短期データを扱い、RDB・AOFによる永続化を無効にしているため、再作成時にはセッションなどが失われる。
 
 GitHub ActionsはAWS OIDCで認証し、バックエンド・マイグレーション用イメージをECRで管理する。SSM Parameter Storeから取得した設定値をTailscale経由のSSH標準入力でLightsailへ渡し、デプロイスクリプトがComposeのプロセス環境へ注入する。Compose・Caddyfileも必要時に転送する。マイグレーション対象の変更がある場合は専用コンテナを単発実行し、成功した後にバックエンドを更新する。
 
@@ -269,7 +269,7 @@ GitHub ActionsはAWS OIDCで認証し、バックエンド・マイグレーシ�
 
 [ダーク版](asset/architecture/aws-architecture-ecs-dark.png) · [HTML版](asset/architecture/aws-architecture-ecs-built.html) · [編集用HTML](asset/architecture/aws-architecture-ecs.html)
 
-Route 53のAPI用AliasレコードはALBを参照する。ブラウザは名前解決後にALBへHTTPSで接続し、ALBがTLSを終端してECS Fargateのバックエンドへ転送する。WAFはALBに関連付けてリクエストを検査する。TODO・認証情報はプライベートサブネットのRDSへ、チャレンジ・セッションなどの短期データはElastiCache for Redisへ保存する。コンテナイメージはECR、タスクへ注入する設定値はSSM Parameter Storeで管理し、DBマイグレーションは専用のECSタスクで実行する。
+Route 53のAPI用AliasレコードはALBを参照する。ブラウザは名前解決後にALBへHTTPSで接続し、ALBがTLSを終端してECS Fargateのバックエンドへ転送する。WAFはALBに関連付けてリクエストを検査する。タスク・認証情報はプライベートサブネットのRDSへ、チャレンジ・セッションなどの短期データはElastiCache for Redisへ保存する。コンテナイメージはECR、タスクへ注入する設定値はSSM Parameter Storeで管理し、DBマイグレーションは専用のECSタスクで実行する。
 
 ALB、バックエンド用ECSタスク、マイグレーションタスクはパブリックサブネットに配置する。ECSタスクはNAT Gatewayを設けずにECRなどへ接続できるようパブリックIPを使う。これはコストを抑えるための選択であり、プライベート配置と同等の隔離ではない。バックエンドへの着信はセキュリティグループでALBからの8080番に限定し、RDSとRedisへの着信はECSからのみ許可する。図ではAZごとの重複、IAM・ACM・ログなどを省略している。
 

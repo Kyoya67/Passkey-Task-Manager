@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Kyoya67 TODO API
+  title: Passkey Task Manager API
   version: 1.0.0
-  description: TODOリストを管理するREST API
+  description: タスクを管理するREST API
 
 servers:
   - url: http://localhost:8080
@@ -14,7 +14,7 @@ tags:
   - name: auth
     description: パスキー登録・ログイン・ログアウト
   - name: todos
-    description: TODO管理
+    description: タスク管理
   - name: health
     description: ヘルスチェック
 
@@ -153,7 +153,7 @@ paths:
         - todos
       security:
         - todoSession: []
-      summary: TODOを作成
+      summary: タスクを作成
       description: ログイン中のユーザーを所有者として保存する
       operationId: createTodo
       requestBody:
@@ -164,7 +164,7 @@ paths:
               $ref: '#/components/schemas/TodoRequest'
       responses:
         '204':
-          description: TODOを作成した
+          description: タスクを作成した
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -179,8 +179,8 @@ paths:
         - todos
       security:
         - todoSession: []
-      summary: TODO一覧を取得
-      description: ログイン中のユーザーが所有するTODOのみ取得する
+      summary: タスク一覧を取得
+      description: ログイン中のユーザーが所有するタスクのみ取得する
       operationId: listTodos
       parameters:
         - $ref: '#/components/parameters/TitleQuery'
@@ -188,7 +188,7 @@ paths:
         - $ref: '#/components/parameters/OffsetQuery'
       responses:
         '200':
-          description: TODO一覧を取得した
+          description: タスク一覧を取得した
           content:
             application/json:
               schema:
@@ -206,8 +206,8 @@ paths:
         - todos
       security:
         - todoSession: []
-      summary: TODOのタイトル・状態を更新
-      description: ログイン中のユーザーが所有するTODOのみ更新する。他人のTODOは404を返す
+      summary: タスクのタイトル・状態を更新
+      description: ログイン中のユーザーが所有するタスクのみ更新する。他人のタスクは404を返す
       operationId: updateTodo
       parameters:
         - $ref: '#/components/parameters/TodoID'
@@ -219,7 +219,7 @@ paths:
               $ref: '#/components/schemas/TodoRequest'
       responses:
         '204':
-          description: TODOを更新した
+          description: タスクを更新した
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -236,14 +236,14 @@ paths:
         - todos
       security:
         - todoSession: []
-      summary: TODOを削除
-      description: ログイン中のユーザーが所有するTODOのみ削除する。他人のTODOは404を返す
+      summary: タスクを削除
+      description: ログイン中のユーザーが所有するタスクのみ削除する。他人のタスクは404を返す
       operationId: deleteTodo
       parameters:
         - $ref: '#/components/parameters/TodoID'
       responses:
         '204':
-          description: TODOを削除した
+          description: タスクを削除した
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -261,8 +261,8 @@ paths:
         - todos
       security:
         - todoSession: []
-      summary: TODOを同じ状態・優先度のグループ内で並べ替える
-      description: 未着手・進行中のTODOのみ並べ替えられる。beforeIdを指定するとそのTODOの直前へ、省略またはnullの場合はグループ末尾へ移動する。完了したTODOや別の状態・優先度のTODOは指定できない
+      summary: タスクを同じ状態・優先度のグループ内で並べ替える
+      description: 未着手・進行中のタスクのみ並べ替えられる。beforeIdを指定するとそのタスクの直前へ、省略またはnullの場合はグループ末尾へ移動する。完了したタスクや別の状態・優先度のタスクは指定できない
       operationId: moveTodo
       parameters:
         - $ref: '#/components/parameters/TodoID'
@@ -298,7 +298,7 @@ components:
       name: id
       in: path
       required: true
-      description: TODOのID
+      description: タスクのID
       schema:
         type: integer
         format: int64
@@ -483,7 +483,7 @@ components:
         title:
           type: string
           minLength: 1
-          description: TODOのタイトル
+          description: タスクのタイトル
           example: 買い物をする
         status:
           $ref: '#/components/schemas/TodoStatus'
@@ -498,7 +498,7 @@ components:
           format: int64
           nullable: true
           minimum: 1
-          description: 移動先の直後にある同じ状態・優先度グループのTODOのID。省略時はグループ末尾へ移動する
+          description: 移動先の直後にある同じ状態・優先度グループのタスクのID。省略時はグループ末尾へ移動する
 
     TodoStatus:
       type: string
@@ -559,6 +559,6 @@ components:
     Unauthorized:
       description: 有効なログインセッションがない
     NotFound:
-      description: 指定されたTODOが存在しない
+      description: 指定されたタスクが存在しない
     ServiceUnavailable:
       description: サーバーまたはデータベースでエラーが発生した
