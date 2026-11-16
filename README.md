@@ -3,7 +3,7 @@
 パスキーで登録・ログインし、タスクをユーザーごとに管理できるWebアプリケーション。
 
 ## 公開中のアプリ
-[https://passkey-todo.kyo8.dev/](https://passkey-todo.kyo8.dev/)
+[https://passkey-task-manager.kyo8.dev/](https://passkey-task-manager.kyo8.dev/)
 
 ブラウザでパスキーを使って登録・ログインし、タスクを管理できます。タスクの作成、検索、編集、削除に加え、ドラッグ操作で状態や優先順位を変更できます。
 APIは運用コストを抑えるため停止している場合があります。その間はログインやタスク操作を利用できません。

@@ -10,7 +10,7 @@ func TestNewWebAuthn(t *testing.T) {
 		wantErr bool
 	}{
 		{name: "local", rpID: "localhost", origin: "http://localhost:3000"},
-		{name: "production", rpID: "passkey-todo.kyo8.dev", origin: "https://passkey-todo.kyo8.dev"},
+		{name: "production", rpID: "passkey-task-manager.kyo8.dev", origin: "https://passkey-task-manager.kyo8.dev"},
 		{name: "missing RP ID", origin: "http://localhost:3000", wantErr: true},
 		{name: "invalid RP ID", rpID: "http://localhost:3000", origin: "http://localhost:3000", wantErr: true},
 		{name: "missing origin", rpID: "localhost", wantErr: true},

@@ -37,7 +37,7 @@ for (const toggle of themeToggles) {
 }
 const defaultAPIURL = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
   ? 'http://localhost:8080'
-  : 'https://api.passkey-todo.kyo8.dev';
+  : 'https://api.passkey-task-manager.kyo8.dev';
 apiInput.textContent = defaultAPIURL;
 const apiURL = () => {
   return defaultAPIURL;
