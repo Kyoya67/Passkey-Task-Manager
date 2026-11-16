@@ -1,8 +1,3 @@
-data "aws_route53_zone" "this" {
-  name         = var.zone_name
-  private_zone = false
-}
-
 resource "aws_acm_certificate" "this" {
   domain_name       = var.domain_name
   validation_method = "DNS"
@@ -23,7 +18,7 @@ resource "aws_route53_record" "validation" {
     }
   }
 
-  zone_id         = data.aws_route53_zone.this.zone_id
+  zone_id         = var.zone_id
   name            = each.value.name
   type            = each.value.type
   records         = [each.value.record]

@@ -241,6 +241,8 @@ sequenceDiagram
 
 AWS環境は1つとし、現在はLightsail版を利用する。Terraformの`deployment_target`で`lightsail`または`ecs`を選択し、APIのDNS参照先とECS版リソースの作成有無を切り替える。フロントエンドは両構成ともAmplifyで配信する。以下の図はリポジトリの実装・設定に基づく構成図で、AWS上のリソースの稼働状況を示すものではない。
 
+フロントエンドの公開ドメインはGitリポジトリ名と一致させ、`passkey-todo.kyo8.dev`を使用する。APIは同一ゾーンの`api.passkey-todo.kyo8.dev`とする。これにより、リポジトリ名と公開URLの対応を明確にし、フロントエンドのOrigin、WebAuthnのRP ID、APIのDNSを同じ命名規則で管理できる。一方、ドメイン変更時はRoute 53のホストゾーン、Amplifyのカスタムドメイン、ACM証明書、CORS/CSRF設定、WebAuthn設定を同時に更新し、DNS切替まで旧URLとの互換性を維持しないトレードオフがある。
+
 #### 4.3.1 Lightsail版（現在の運用構成）
 
 <picture>

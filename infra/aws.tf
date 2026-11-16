@@ -112,8 +112,8 @@ module "ssm_parameter" {
   name = local.project
   config = {
     APP_PORT             = tostring(local.backend_port)
-    CORS_ALLOWED_ORIGINS = "https://ca-techlounge-todo.kyo8.dev,http://localhost:8081"
-    CSRF_ALLOWED_ORIGINS = "https://ca-techlounge-todo.kyo8.dev"
+    CORS_ALLOWED_ORIGINS = "https://passkey-todo.kyo8.dev,http://localhost:8081"
+    CSRF_ALLOWED_ORIGINS = "https://passkey-todo.kyo8.dev"
     DB_HOST              = local.is_ecs ? try(module.rds[0].address, "") : "db"
     DB_NAME              = "todo"
     DB_PORT              = "5432"
@@ -121,8 +121,8 @@ module "ssm_parameter" {
     DB_SSLROOTCERT       = "/etc/ssl/certs/rds-global-bundle.pem"
     REDIS_ADDR           = local.is_ecs ? "${try(module.elasticache[0].primary_endpoint_address, "")}:6379" : "redis:6379"
     REDIS_TLS            = local.is_ecs ? "true" : "false"
-    WEBAUTHN_ORIGIN      = "https://ca-techlounge-todo.kyo8.dev"
-    WEBAUTHN_RP_ID       = "ca-techlounge-todo.kyo8.dev"
+    WEBAUTHN_ORIGIN      = "https://passkey-todo.kyo8.dev"
+    WEBAUTHN_RP_ID       = "passkey-todo.kyo8.dev"
   }
   secure_config = {
     DB_USER     = var.db_username
@@ -154,8 +154,8 @@ module "ecs" {
 module "acm" {
   source = "./modules/acm"
 
-  domain_name = "api.ca-techlounge-todo.kyo8.dev"
-  zone_name   = "ca-techlounge-todo.kyo8.dev"
+  domain_name = "api.passkey-todo.kyo8.dev"
+  zone_id     = module.route53.zone_id
   tags        = local.common_tags
 }
 
@@ -183,8 +183,8 @@ module "waf" {
 module "route53" {
   source = "./modules/route53"
 
-  zone_name    = "ca-techlounge-todo.kyo8.dev"
-  record_name  = "api.ca-techlounge-todo.kyo8.dev"
+  zone_name    = "passkey-todo.kyo8.dev"
+  record_name  = "api.passkey-todo.kyo8.dev"
   alb_dns_name = try(module.alb[0].dns_name, "")
   alb_zone_id  = try(module.alb[0].zone_id, "")
   target       = local.is_ecs ? "alb" : "lightsail"
@@ -197,7 +197,7 @@ module "amplify" {
 
   name        = "${local.project}-frontend"
   branch_name = "main"
-  domain_name = "ca-techlounge-todo.kyo8.dev"
+  domain_name = "passkey-todo.kyo8.dev"
   tags        = local.common_tags
 }
 

@@ -299,11 +299,11 @@ func TestLoginHandlerFinish(t *testing.T) {
 		})
 	}
 	service.err = nil
-	secureHandler := NewHandler(nil, service, "https://ca-techlounge-todo.kyo8.dev")
+	secureHandler := NewHandler(nil, service, "https://passkey-todo.kyo8.dev")
 	secureEcho := echo.New()
 	secureEcho.POST("/finish", secureHandler.FinishLogin)
 	secureReq := httptest.NewRequest(http.MethodPost, "/finish", strings.NewReader(string(body)))
-	secureReq.Header.Set(echo.HeaderOrigin, "https://ca-techlounge-todo.kyo8.dev")
+	secureReq.Header.Set(echo.HeaderOrigin, "https://passkey-todo.kyo8.dev")
 	secureReq.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	secureRes := httptest.NewRecorder()
 	secureEcho.ServeHTTP(secureRes, secureReq)
@@ -364,11 +364,11 @@ func TestLogoutHandler(t *testing.T) {
 			}
 		})
 	}
-	secureHandler := NewHandler(nil, &fakeLoginServiceAPI{}, "https://ca-techlounge-todo.kyo8.dev")
+	secureHandler := NewHandler(nil, &fakeLoginServiceAPI{}, "https://passkey-todo.kyo8.dev")
 	e := echo.New()
 	e.POST("/auth/logout", secureHandler.Logout)
 	request := httptest.NewRequest(http.MethodPost, "/auth/logout", nil)
-	request.Header.Set(echo.HeaderOrigin, "https://ca-techlounge-todo.kyo8.dev")
+	request.Header.Set(echo.HeaderOrigin, "https://passkey-todo.kyo8.dev")
 	response := httptest.NewRecorder()
 	e.ServeHTTP(response, request)
 	if response.Code != http.StatusNoContent || len(response.Result().Cookies()) != 1 || !response.Result().Cookies()[0].Secure {
