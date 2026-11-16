@@ -13,14 +13,14 @@ func TestRequireTodoOrigin(t *testing.T) {
 		name, method, path, origin string
 		want                      int
 	}{
-		{"allowed create", http.MethodPost, "/todos", "https://ca-techlounge-todo.kyo8.dev", 204},
+		{"allowed create", http.MethodPost, "/todos", "https://passkey-task-manager.kyo8.dev", 204},
 		{"allowed update", http.MethodPut, "/todos/1", "http://localhost:3000", 204},
-		{"allowed delete", http.MethodDelete, "/todos/1", "https://ca-techlounge-todo.kyo8.dev", 204},
-		{"allowed position", http.MethodPut, "/todos/1/position", "https://ca-techlounge-todo.kyo8.dev", 204},
+		{"allowed delete", http.MethodDelete, "/todos/1", "https://passkey-task-manager.kyo8.dev", 204},
+		{"allowed position", http.MethodPut, "/todos/1/position", "https://passkey-task-manager.kyo8.dev", 204},
 		{"other origin", http.MethodPost, "/todos", "https://evil.kyo8.dev", 403},
 		{"missing origin", http.MethodDelete, "/todos/1", "", 403},
 		{"null origin", http.MethodPut, "/todos/1", "null", 403},
-		{"similar origin", http.MethodPost, "/todos", "https://ca-techlounge-todo.kyo8.dev.evil.com", 403},
+		{"similar origin", http.MethodPost, "/todos", "https://passkey-task-manager.kyo8.dev.evil.com", 403},
 		{"read without origin", http.MethodGet, "/todos", "", 204},
 		{"preflight", http.MethodOptions, "/todos", "https://evil.kyo8.dev", 204},
 		{"auth untouched", http.MethodPost, "/auth/login/begin", "", 204},
@@ -28,7 +28,7 @@ func TestRequireTodoOrigin(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			e := echo.New()
-			e.Use(RequireTodoOrigin([]string{"https://ca-techlounge-todo.kyo8.dev", "http://localhost:3000"}))
+		e.Use(RequireTodoOrigin([]string{"https://passkey-task-manager.kyo8.dev", "http://localhost:3000"}))
 			e.Add(tc.method, tc.path, func(c echo.Context) error {
 				return c.NoContent(http.StatusNoContent)
 			})

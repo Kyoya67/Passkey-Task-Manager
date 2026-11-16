@@ -1,8 +1,3 @@
-data "aws_route53_zone" "this" {
-  name         = var.zone_name
-  private_zone = false
-}
-
 resource "aws_acm_certificate" "this" {
   domain_name       = var.domain_name
   validation_method = "DNS"
@@ -16,14 +11,14 @@ resource "aws_acm_certificate" "this" {
 
 resource "aws_route53_record" "validation" {
   for_each = {
-    for option in aws_acm_certificate.this.domain_validation_options : option.domain_name => {
-      name   = option.resource_record_name
-      record = option.resource_record_value
-      type   = option.resource_record_type
+    (var.domain_name) = {
+      name   = one(aws_acm_certificate.this.domain_validation_options).resource_record_name
+      record = one(aws_acm_certificate.this.domain_validation_options).resource_record_value
+      type   = one(aws_acm_certificate.this.domain_validation_options).resource_record_type
     }
   }
 
-  zone_id         = data.aws_route53_zone.this.zone_id
+  zone_id         = var.zone_id
   name            = each.value.name
   type            = each.value.type
   records         = [each.value.record]
